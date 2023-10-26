@@ -1,0 +1,63 @@
+{
+    "name": "Your Name",
+    "title": "Python Developer",
+    "location": "Your adddress",
+    "phone": "Your phone number",
+    "email": "Your email address",
+    "website": "Your website",
+    "github": "Your github link",
+    "linkedin": "Your LinkedIn",
+    "summary": "Your personal summary",
+    "educations": [
+        {
+            "name": "Your university",
+            "location": "Location of your university",
+            "duration": "Sept 2021-April 2022",
+            "degree": "Artificial Intelligence"
+        }
+    ],
+    "jobs": [
+        {
+            "title": "Python Developer",
+            "duration": "Oct 2022–June 2023",
+            "location": "US",
+            "company": "Your company 1",
+            "desc": [
+                "Built data pipeline for streaming transaction data from AWS Dynamodb to AWS Redshift using AWS lambda, kinesis firehose",
+                "Developed a risk management dashboard that can report and visualize exposures in real-time",
+                "Developed and maintained a high-performance trading system that can automatically trade over 10 cryptocurrency products in multiple exchanges simultaneously with low latency"
+            ]
+        },
+        {
+            "title": "Python Developer",
+            "duration": "Oct 2022–June 2023",
+            "location": "US",
+            "company": "Your company 2",
+            "desc": [
+                "Built data pipeline for streaming transaction data from AWS Dynamodb to AWS Redshift using AWS lambda, kinesis firehose",
+                "Developed a risk management dashboard that can report and visualize exposures in real-time",
+                "Developed and maintained a high-performance trading system that can automatically trade over 10 cryptocurrency products in multiple exchanges simultaneously with low latency"
+            ]
+        }
+    ],
+    "skills": [
+        "Python",
+        "SQL",
+        "JavaScript",
+        "CSS",
+        "HTML",
+        "React",
+        "NextJS",
+        "Flask",
+        "FastAPI",
+        "Django",
+        "MongoDB",
+        "PostgreSQL",
+        "GIT",
+        "Docker",
+        "AWS",
+        "Nature Language Processing and Understanding",
+        "Text to Speech",
+        "Speech Recognition"
+    ]
+}
