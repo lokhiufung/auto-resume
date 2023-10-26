@@ -1,10 +1,19 @@
 # Build your resume once ONLY!!
 "Enhance" your experience to increase your chances of landing interviews, while saving valuable time for side projects and learning.
 
+
 ## Auto Resume
 This repository seeks to harness the capabilities of ChatGPT in generating more captivating and job description-targeted resumes from your base resume. I realized that the conversion rate from sending resumes to securing interviews was exceedingly low (around 2-3% per 100 applications). Enhancing your chances of an interview requires tailoring your resume to match the job description (e.g., incorporating relevant keywords like 'Python' for a python developer role). I found this "resume-fitting" task to be extremely annoying and meaningless. As a software developer, you'd likely prefer to devote your time to creating your next impactful project to address real-world issues—utilizing your software engineering skills to improve the lives of others.
 
 Consequently, I am motivated to develop a solution that amplifies the likelihood of landing an interview while preserving every developer's valuable time.
+
+
+## Setup
+Use poetry to setup the environment
+```bash
+poetry install
+```
+
 
 ## How to use
 ### 1. Set the Open AI api key as environment variable
@@ -16,15 +25,14 @@ export OPENAI_API_KEY="your-openai-api-key"
 ### 2. Prepare your base resume json
 Prepare a base resume in JSON. Please refer to the resume.example.json
 
-
 ### 3. Prepare the JD of your targeted job opening
 Prepare a txt file containing the JD of your targeted job opening.
 
-
 ### 4. Run with the CLI
-```
+```bash
 python gnerate_resume.py --resume your-base-resume-json.json --jd your-job-description.txt
 ```
+
 
 ## Documentation
 Last update: 2023-10-26
