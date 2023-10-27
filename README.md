@@ -30,7 +30,7 @@ Prepare a txt file containing the JD of your targeted job opening.
 
 ### 4. Run with the CLI
 ```bash
-python gnerate_resume.py --resume your-base-resume-json.json --jd your-job-description.txt
+python generate_resume.py --resume your-base-resume-json.json --jd your-job-description.txt
 ```
 
 
