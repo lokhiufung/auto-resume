@@ -11,6 +11,7 @@ from auto_resume.sdk.agents.keyword_injecting_agent.agent import KeywordInjectin
 from auto_resume.sdk.agents.skill_injecting_agent.agent import SkillInjectingAgent
 # import utility functions
 from auto_resume.sdk.create_resume import create_resume
+from auto_resume.sdk.evaluate_resume import evaluate_resume
 
 
 LLM_BACKEND = 'openai'
@@ -68,7 +69,14 @@ def cli():
     # 5. update your experience
     updated_resume = {**base_resume, 'jobs': jobs}
 
+    # 6. evaluate the resume
+    updated_metrics = evaluate_resume(updated_resume, job_details['keywords'])
+    base_metrics = evaluate_resume(base_resume, job_details['keywords'])
+    print(f'{updated_metrics=}')
+    print(f'{base_metrics=}')
+
     # 6. create resume in doc
     doc = create_resume(updated_resume)
     doc.save(output_file_path)
+
 

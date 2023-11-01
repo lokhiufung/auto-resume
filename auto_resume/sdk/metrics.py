@@ -2,7 +2,8 @@ import re
 from collections import Counter
 
 
-def calculate_keyword_freq_score(text, keywords):
+def get_keyword_score(text, keywords):
+    score = 0
     # Convert the text to lowercase to make the search case-insensitive
     text = text.lower()
 
@@ -13,8 +14,9 @@ def calculate_keyword_freq_score(text, keywords):
     for keyword in keywords:
         pattern = re.compile(r'\b' + re.escape(keyword.lower()) + r'\b')
         matches = pattern.findall(text)
-        keyword_counter[keyword] += len(matches)
+        # keyword_counter[keyword] += len(matches)
+        score += len(matches)
 
-    return keyword_counter
+    return score
 
 
