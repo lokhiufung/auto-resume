@@ -2,16 +2,10 @@ import argparse
 import json
 import time
 
-# import llm
-from auto_resume.sdk.llms.openai_llm import OpenaiLLM
-# import required agents
-from auto_resume.sdk.agents.experience_enhancing_agent.agent import ExperienceEnhancingAgent
-from auto_resume.sdk.agents.jd_parsing_agent.agent import JdParsingAgent
-from auto_resume.sdk.agents.keyword_injecting_agent.agent import KeywordInjectingAgent
-from auto_resume.sdk.agents.skill_injecting_agent.agent import SkillInjectingAgent
+# import engine
+from auto_resume.engine_v1 import Engine
 # import utility functions
 from auto_resume.sdk.create_resume import create_resume
-from auto_resume.sdk.evaluate_resume import evaluate_resume
 
 
 LLM_BACKEND = 'openai'
@@ -26,57 +20,31 @@ def parse_args():
     return parser.parse_args()
 
 
-def cli():
+def main():
     args = parse_args()
-    
-    # 1. load base resume and jd
+
     with open(args.resume, 'r') as f:
         base_resume = json.load(f)
     with open(args.jd, 'r') as f:
         job_description = f.read()
+
+    engine_config = {
+        'base_resume': base_resume,
+        'job_description': job_description,
+    }
     output_file_path = args.output
 
-    # 2. initialize the llm engine (TEMP: shared llm config now)
-    llm_config={
-        'temperature': 0.3,
-        'max_tokens': 2000,
-        'model': 'gpt-3.5-turbo'
-    }
+    # initialize engine
+    engine = Engine(
+        engine_config=engine_config
+    )
+    result = engine.start()
 
-    # 3. initialize all agents
-    experience_enhancing_agent = ExperienceEnhancingAgent.from_llm_config(llm_config, llm_backend=LLM_BACKEND)
-    jd_parsing_agent = JdParsingAgent.from_llm_config(llm_config, llm_backend=LLM_BACKEND)
-    skill_injecting_agent = SkillInjectingAgent.from_llm_config(llm_config, llm_backend=LLM_BACKEND)
-    keyword_injecting_agent = KeywordInjectingAgent.from_llm_config(llm_config, llm_backend=LLM_BACKEND)
+    # check metrics
+    print(result['metrics'])
 
-
-    # 4. multi-agent interaction logic: update job experiences
-    jobs = []
-    job_details = jd_parsing_agent.act(job_description=job_description)
-    for job in base_resume['jobs']:
-        updated_desc = skill_injecting_agent.act(skills=job_details['skills'], experiences=job['desc'])
-        updated_desc = keyword_injecting_agent.act(keywords=job_details['keywords'], experiences=updated_desc['experiences'])
-        updated_desc = experience_enhancing_agent.act(experiences=updated_desc['experiences'])
-        
-        result = {
-            **job,
-            'desc': updated_desc['experiences']
-        }
-        jobs.append(result)
-
-        time.sleep(1)
-
-    # 5. update your experience
-    updated_resume = {**base_resume, 'jobs': jobs}
-
-    # 6. evaluate the resume
-    updated_metrics = evaluate_resume(updated_resume, job_details['keywords'])
-    base_metrics = evaluate_resume(base_resume, job_details['keywords'])
-    print(f'{updated_metrics=}')
-    print(f'{base_metrics=}')
-
-    # 6. create resume in doc
-    doc = create_resume(updated_resume)
+    # create resume in doc
+    doc = create_resume(resume=result['result'])
     doc.save(output_file_path)
 
 

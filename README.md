@@ -35,7 +35,7 @@ python generate_resume.py --resume your-base-resume-json.json --jd your-job-desc
 
 
 ## Documentation
-Last update: 2023-10-26
+Last update: 2023-11-17
 
 ### Agents
 #### 1. jd_parsing_agent
@@ -62,7 +62,7 @@ This agent enhance job experiences provided from a user's job history. The objec
 
 
 ### Interaction logic of agents
-The `cli.py` employs a multi-agent system to refine a user's resume according to a given job description. Here's how the agents interact and contribute to the resume enhancement process:
+The `engine_v1.py` employs a multi-agent system to refine a user's resume according to a given job description. The `start()` method encapsulates the logic of building the resume and the `create_agents()` method initializes all agents. Here's how the agents interact and contribute to the resume enhancement process:
 
 #### 1. Initialization:
 All agents are initialized with the same LLM (Language Model) configuration.
