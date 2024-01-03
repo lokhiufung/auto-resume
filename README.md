@@ -7,6 +7,7 @@ This repository seeks to harness the capabilities of ChatGPT in generating more 
 
 Consequently, I am motivated to develop a solution that amplifies the likelihood of landing an interview while preserving every developer's valuable time.
 
+Update: added version 2 engine now and you can save the jd locally now
 
 ## Setup
 Use poetry to setup the environment
