@@ -1,9 +1,8 @@
 import argparse
 import json
 import time
+import os
 
-# import engine
-from auto_resume.engine_v1 import Engine
 # import utility functions
 from auto_resume.sdk.create_resume import create_resume
 
@@ -16,7 +15,10 @@ def parse_args():
     parser.add_argument('--resume', type=str, required=True, help="the file path to your json formmated resume")
     parser.add_argument('--jd', type=str, required=True, help="the file path to your json formmated resume")
     parser.add_argument('--output', type=str, default='resume-updated.docx', help="the file path to your output resume")
-    parser.add_argument('--model', type=str, default='gpt-3.5-turbo', help="the model name of openai model, i.e gpt-3.5-turbo, gpt-4... etc. default to gpt-3.5-turbo")
+    # parser.add_argument('--model', type=str, default='gpt-3.5-turbo', help="the model name of openai model, i.e gpt-3.5-turbo, gpt-4... etc. default to gpt-3.5-turbo")
+    parser.add_argument('--version', '-v', type=str, default='v2', help="the version of engine")
+    parser.add_argument('--save', default=True, help='store the job title and jd')
+    parser.add_argument('--storage', default='./storage', help='store the job title and jd')
     return parser.parse_args()
 
 
@@ -33,12 +35,30 @@ def main():
         'job_description': job_description,
     }
     output_file_path = args.output
+    
+    if not os.path.exists(args.storage):
+        os.mkdir(args.storage)
 
     # initialize engine
-    engine = Engine(
-        engine_config=engine_config
-    )
-    result = engine.start()
+    print(f'Using engine version={args.version}')
+    if args.version == 'v1':
+        # import engine
+        from auto_resume.engine_v1 import Engine
+        
+        engine = Engine(
+            engine_config=engine_config,
+            storage=args.storage
+        )
+    else:
+        # import engine
+        from auto_resume.engine_v2 import Engine
+        
+        engine = Engine(
+            engine_config=engine_config,
+            storage=args.storage
+        )
+
+    result = engine.start(save=args.save)
 
     # check metrics
     print(result['metrics'])
