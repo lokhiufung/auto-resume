@@ -14,6 +14,11 @@ from auto_resume.sdk.evaluate_resume import evaluate_resume
 logger = get_logger('engine.log', logger_lv='debug')
 
 
+def clean_job_title(job_title: str):
+    job_title = job_title.replace('/', '_')
+    return job_title
+
+
 class Engine:
 
     ENGINE_CONFIG = {}  # default config
@@ -22,8 +27,14 @@ class Engine:
         self.agents = {}
         self.engine_config = {**self.ENGINE_CONFIG, **engine_config}  # engine_config always override the default configs
         self.storage = storage
+        self.resume_storage_path = os.path.join(self.storage, 'resume')
+        self.jd_storage_path = os.path.join(self.storage, 'jd')
         # initialize 
         self.agents = self.create_agents()
+        if not os.path.exists(self.resume_storage_path):
+            os.makedirs(self.resume_storage_path)
+        if not os.path.exists(self.jd_storage_path):
+            os.makedirs(self.jd_storage_path)
 
     def create_agents(self):
         # TODO: llm_config may be tunable parameters?
@@ -73,18 +84,21 @@ class Engine:
 
             time.sleep(1)
 
+        # 5. update your experience
+        updated_resume = {**base_resume, 'jobs': jobs}
+
         if save:
             job_title = job_details['job_title']
             job_title_formatted = '_'.join(job_title.lower().split(' '))
+            job_title_formatted = clean_job_title(job_title_formatted)
             # hash
             hash = hashlib.md5()
             hash.update(job_description.encode())
             jd_hashed = hash.hexdigest()  # 32 char string, 128-bit
-            with open(os.path.join(self.storage, f'{job_title_formatted}-{jd_hashed}.txt'), 'w') as f:
+            with open(os.path.join(self.jd_storage_path, f'{job_title_formatted}-{jd_hashed}.txt'), 'w') as f:
                 f.write(job_description)
-                
-        # 5. update your experience
-        updated_resume = {**base_resume, 'jobs': jobs}
+            with open(os.path.join(self.resume_storage_path, f'{job_title_formatted}-{jd_hashed}.txt'), 'w') as f:
+                f.write(job_description)
 
         # 6. evaluate the resume
         # reminder: now evaluating the resume requires the keywords extracted by jd_parsing_agent. Can you decouple the evalution from engine.start()?

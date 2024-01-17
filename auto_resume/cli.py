@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('--jd', type=str, required=True, help="the file path to your json formmated resume")
     parser.add_argument('--output', type=str, default='resume-updated.docx', help="the file path to your output resume")
     # parser.add_argument('--model', type=str, default='gpt-3.5-turbo', help="the model name of openai model, i.e gpt-3.5-turbo, gpt-4... etc. default to gpt-3.5-turbo")
-    parser.add_argument('--version', '-v', type=str, default='v2', help="the version of engine")
+    parser.add_argument('--version', '-v', type=str, default='v1', help="the version of engine")
     parser.add_argument('--save', default=True, help='store the job title and jd')
     parser.add_argument('--storage', default='./storage', help='store the job title and jd')
     return parser.parse_args()
