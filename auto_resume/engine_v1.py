@@ -1,6 +1,7 @@
 import time
 import os
 import hashlib
+import json
 
 from auto_resume.sdk.logger import get_logger
 # import agents
@@ -98,7 +99,7 @@ class Engine:
             with open(os.path.join(self.jd_storage_path, f'{job_title_formatted}-{jd_hashed}.txt'), 'w') as f:
                 f.write(job_description)
             with open(os.path.join(self.resume_storage_path, f'{job_title_formatted}-{jd_hashed}.txt'), 'w') as f:
-                f.write(job_description)
+                json.dump(updated_resume, f)
 
         # 6. evaluate the resume
         # reminder: now evaluating the resume requires the keywords extracted by jd_parsing_agent. Can you decouple the evalution from engine.start()?
