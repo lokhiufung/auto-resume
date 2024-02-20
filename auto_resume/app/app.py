@@ -3,7 +3,7 @@ import json
 import dash
 import dash_bootstrap_components as dbc
 from dash import html, dcc, callback_context
-from dash.dependencies import Input, Output, State, MATCH, ALL
+from dash.dependencies import Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
 
 from auto_resume.app.components.company_card import CompanyCard
@@ -11,6 +11,7 @@ from auto_resume.app.db_utils import get_db_client
 
 from auto_resume.app.api import job_history as JobHistoryApi
 from auto_resume.app.api import company as CompanyApi
+from auto_resume.app.api import resume as ResumeApi
 
 
 
@@ -27,6 +28,9 @@ def get_data():
     for company in companies:
         data.append({
             'company': company.name,
+            'start_date': company.startDate,
+            'end_date': company.endDate,
+            'location': company.location,
             'experiences': [{'title': job_history.title.title, 'description': job_history.description} for job_history in company.job_histories]
         })
     db_client.close()
@@ -37,17 +41,23 @@ def create_app():
     # Initialize the Dash app with a bootstrap theme
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-    sample_data = get_data()
+    initial_data = get_data()
     # Initialize app layout with sample data
     app.layout = dbc.Container(
         [
-            dbc.Row(dbc.Col(html.H1("Resume Editor"), className="mb-4")),
             dbc.Row(
                 [
+                    dbc.Col(html.H1("Resume Editor"), className="mb-4"),
                     dbc.Col(
-                        [CompanyCard(company) for company in sample_data],
-                        id='companies-container'
+                        dbc.Button("Export to Doc", id="export-button", color="secondary", className="mb-4"),
+                        width={"size": 2, "offset": 10},
+                        style={"text-align": "right"}
                     )
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(id='companies-container')
                 ]
             ),
             dbc.Row(
@@ -57,20 +67,38 @@ def create_app():
                 ],
                 className="mb-4",
             ),
+            # Hidden Div to store the sample data
+            dcc.Store(id='store-data', data=initial_data, storage_type='local'),
+            dcc.Download(id='download-component'),
         ],
         fluid=True,
     )
 
-
     @app.callback(
-        Output('companies-container', 'children'),
-        Input({'type': 'add-experience', 'index': ALL}, 'n_clicks'),
-        [State({'type': 'input-title', 'index': ALL}, 'value'),  # Title input state
-         State({'type': 'input-description', 'index': ALL}, 'value'),  # Description input state
-         State({'type': 'add-experience', 'index': ALL}, 'id')],  # To identify the company
+        Output('download-component', 'data'),
+        Input('export-button', 'n_clicks'),
+        [State('store-data', 'data')],
         prevent_initial_call=True
     )
-    def add_experience(n_clicks, titles, descriptions, btn_ids):
+    def export_resume_callback(n_clicks, current_data):
+        if n_clicks:
+            # data = get_data()  # Fetch your data
+            file_path = ResumeApi.export_resume(data=current_data)  # Export the resume data to a .docx file
+            return dcc.send_file(file_path)
+
+
+    @app.callback(
+        Output('store-data', 'data'),
+        Input({'type': 'add-experience', 'index': ALL}, 'n_clicks'),
+        [
+            State({'type': 'input-title', 'index': ALL}, 'value'),  # Title input state
+            State({'type': 'input-description', 'index': ALL}, 'value'),  # Description input state
+            State({'type': 'add-experience', 'index': ALL}, 'id'), # To identify the company
+            State('store-data', 'data'),  # current data
+        ],  
+        prevent_initial_call=True
+    )
+    def add_experience(n_clicks, titles, descriptions, btn_ids, current_data):
         ctx = callback_context
         if not ctx.triggered:
             raise PreventUpdate
@@ -96,8 +124,20 @@ def create_app():
         JobHistoryApi.create_job_history(db_client, company_name, title, description)
         db_client.close()
 
+        # update current data
+        for exp in current_data:
+            if exp['company'] == company_name:
+                exp['experiences'].append({'title': title, 'description': description})
         # Refresh the data to reflect the new experience
-        return [CompanyCard(company) for company in get_data()]
+        return current_data
+    
+    @app.callback(
+        Output('companies-container', 'children'),
+        Input('store-data', 'data')  # Listen for changes in the store
+    )
+    def update_company_cards(current_data):
+        return [CompanyCard(company) for company in current_data]
+
 
     return app
 

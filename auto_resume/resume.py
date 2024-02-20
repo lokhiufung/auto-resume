@@ -60,7 +60,7 @@ class Resume:
         with open(file_path, 'r') as f:
             resume_json = json.load(f)
         return cls(**resume_json)
-
+    
     def to_json(self):
         return {
             'name': self.name,
