@@ -8,4 +8,6 @@ class Title(Base):
     __tablename__ = 'title'
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False, unique=True)
-    job_histories = relationship("JobHistory", secondary="title_job_history")
+
+    # Relationship back to JobHistory
+    job_histories = relationship("JobHistory", back_populates="title")

@@ -9,7 +9,6 @@ from auto_resume.sdk.vector_stores.annoy_vector_store import AnnoyVectorStore
 from auto_resume.sdk.embedding_models.sentence_transformer_embedding_model import SentenceTransformerEmbeddingModel
 
 
-
 def migrate_job_histories(session, file_path):
     with open(file_path, 'r') as file:
         for line in file:
@@ -19,21 +18,15 @@ def migrate_job_histories(session, file_path):
             company_data = data['company']
             company = session.query(Company).filter_by(name=company_data['name']).first()
             if not company:
-                company = Company(name=company_data['name'], description=company_data['location'])
+                company = Company(
+                    name=company_data['name'],
+                    description='',
+                    location=company_data['location'],
+                    startDate=company_data['duration'].split('–')[0],
+                    endDate=company_data['duration'].split('–')[1] if '–' in company_data['duration'] else None,
+                )
                 session.add(company)
                 session.commit()
-            
-            # Process job history (ignoring the provided ID and letting the database generate it)
-            job_history = JobHistory(
-                companyId=company.id,
-                title=", ".join(data['titles']),  # Assuming there could be multiple titles
-                startDate=company_data['duration'].split('–')[0],
-                endDate=company_data['duration'].split('–')[1] if '–' in company_data['duration'] else None,
-                des=data['desc'],
-                location=company_data['location']
-            )
-            session.add(job_history)
-            session.commit()
             
             # Process titles
             for title_name in data['titles']:
@@ -42,8 +35,20 @@ def migrate_job_histories(session, file_path):
                     title = Title(title=title_name)
                     session.add(title)
                     session.commit()
-                
-                # Create or update TitleJobHistory relationship
+            
+            title = session.query(Title).filter_by(title=data['titles'][0]).first()
+            # Process job history (ignoring the provided ID and letting the database generate it)
+            job_history = JobHistory(
+                companyId=company.id,
+                titleId=title.id,
+                description=data['desc'],
+            )
+            session.add(job_history)
+            session.commit()
+
+            # Create or update TitleJobHistory relationship
+            for title_name in data['titles']:
+                title = session.query(Title).filter_by(title=title_name).first()
                 title_job_history = TitleJobHistory(title_id=title.id, job_history_id=job_history.id)
                 session.add(title_job_history)
             session.commit()
@@ -96,9 +101,9 @@ def main():
     # recreate
     Base.metadata.create_all(engine)
 
-    # migrate_job_histories(session, file_path='./storage/base/highlight.jsonl')
+    migrate_job_histories(session, file_path='./storage/base/highlight.jsonl')
     print('Creation of tables in the SQLite database has been completed successfully.')
-
+    return
     # build vector stores for each company
     store_file_path = './storage/vector_store'
     if not os.path.exists(store_file_path):
