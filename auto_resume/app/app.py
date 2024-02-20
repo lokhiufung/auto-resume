@@ -68,11 +68,23 @@ def create_app():
                 className="mb-4",
             ),
             # Hidden Div to store the sample data
+            # dcc.Store(id='store-data', data=initial_data),
             dcc.Store(id='store-data', data=initial_data, storage_type='local'),
             dcc.Download(id='download-component'),
         ],
         fluid=True,
     )
+    # app.clientside_callback(
+    #     """
+    #     function(n_clicks) {
+    #         localStorage.clear();  // This clears everything in localStorage
+    #         return '';  // Return whatever is needed to update the Output, if anything
+    #     }
+    #     """,
+    #     Output('dummy-div', 'children'),  # Dummy output, adjust as necessary
+    #     [Input('clear-storage-button', 'n_clicks')]
+    # )
+
 
     @app.callback(
         Output('download-component', 'data'),
