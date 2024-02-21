@@ -7,6 +7,8 @@ This repository seeks to harness the capabilities of ChatGPT in generating more 
 
 Consequently, I am motivated to develop a solution that amplifies the likelihood of landing an interview while preserving every developer's valuable time.
 
+## Current state
+I found that the auto mode did not make a good job. Most of the time the generated bullet points did not make sense. Therefore for the moment I created a dash app to version control your resume. I simply use the ChatGPT web interface to generate bullet points and I only stored those good generation in my database. You can use `add experience` on the app to do so.
 
 ## Setup
 Use poetry to setup the environment
