@@ -14,9 +14,9 @@ def create_company(db_client: Session, company_name: str, description: str, star
     # Create a new instance of the Company model
     new_company = Company(
         name=company_name,
+        startDate=start_date,  # Make sure your model has fields for these attributes
+        endDate=end_date,
         description=description,
-        start_date=start_date,  # Make sure your model has fields for these attributes
-        end_date=end_date,
         location=location
     )
     # Add the new company to the session and commit the transaction

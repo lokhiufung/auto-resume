@@ -25,7 +25,7 @@ def CompanyCard(company_data):
                         className="mb-2"
                     ),
                     dbc.Row(
-                        dbc.Col(dbc.Textarea(id={'type': 'input-description', 'index': company_data['company']}, placeholder="Description", rows=5), width=12),
+                        dbc.Col(dbc.Textarea(id={'type': 'input-description', 'index': company_data['company']}, placeholder="Description", rows=5, value=''), width=12),
                         className="mb-2"
                     ),
                     dbc.Button("Add Experience", id={'type': 'add-experience', 'index': company_data['company']}, n_clicks=0, className="mt-2")

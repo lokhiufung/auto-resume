@@ -10,6 +10,9 @@ python = "^3.10"
 openai = "^0.28.1"
 rich = "^13.6.0"
 python-docx = "^1.0.1"
+dash = "^2.15.0"
+dash-bootstrap-components = "^1.5.0"
+sqlalchemy = "^2.0.27"
 
 
 [build-system]

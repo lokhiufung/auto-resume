@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import dash
 import dash_bootstrap_components as dbc
@@ -7,6 +8,7 @@ from dash.dependencies import Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
 
 from auto_resume.app.components.company_card import CompanyCard
+from auto_resume.app.components.new_company_form import NewCompanyForm
 from auto_resume.app.db_utils import get_db_client
 
 from auto_resume.app.api import job_history as JobHistoryApi
@@ -47,7 +49,7 @@ def create_app():
         [
             dbc.Row(
                 [
-                    dbc.Col(html.H1("Resume Editor"), className="mb-4"),
+                    dbc.Col(html.H1("Resume Editor"), className="mb-4", style={'text-align': 'center'}),
                     dbc.Col(
                         dbc.Button("Export to Doc", id="export-button", color="secondary", className="mb-4"),
                         width={"size": 2, "offset": 10},
@@ -61,18 +63,17 @@ def create_app():
                 ]
             ),
             dbc.Row(
-                [
-                    dbc.Col(dbc.Input(id="input-company", placeholder="Enter company name..."), width=8),
-                    dbc.Col(dbc.Button("Add Company", id="add-company", color="primary", className="ms-2"), width=4)
-                ],
+                # The call to include your company form within the grid
+                dbc.Col([NewCompanyForm()], width=12),
                 className="mb-4",
             ),
             # Hidden Div to store the sample data
-            # dcc.Store(id='store-data', data=initial_data),
-            dcc.Store(id='store-data', data=initial_data, storage_type='local'),
+            dcc.Store(id='store-data', data=initial_data),
+            # dcc.Store(id='store-data', data=initial_data, storage_type='local'),
             dcc.Download(id='download-component'),
         ],
         fluid=True,
+        style={'width': '70%', 'marginTop': '30px'}
     )
     # app.clientside_callback(
     #     """
@@ -85,6 +86,15 @@ def create_app():
     #     [Input('clear-storage-button', 'n_clicks')]
     # )
 
+    @app.callback(
+        Output("end-date-row", "style"),
+        [Input("checkbox-current-job", "value")]
+    )
+    def toggle_end_date_visibility(current_job_checked):
+        if current_job_checked:
+            return {"display": "none"}  # End Date field is hidden
+        else:
+            return {}  # End Date field is shown normally
 
     @app.callback(
         Output('download-component', 'data'),
@@ -150,6 +160,37 @@ def create_app():
     def update_company_cards(current_data):
         return [CompanyCard(company) for company in current_data]
 
+    @app.callback(
+        Output('success-message', 'children'),  # Assuming you want to display a confirmation or error message
+        Output('success-message', 'is_open'), 
+        Input('submit-new-company', 'n_clicks'),  # The button the user clicks to submit the form
+        [State('input-company-name', 'value'),
+        State('input-company-description', 'value'),
+        State('input-company-start', 'value'),
+        State('input-company-end', 'value'),
+        State('input-company-location', 'value'),
+        State('checkbox-current-job', 'value')],  # Assuming the name of your checkbox id is `checkbox-current-job`
+        prevent_initial_call=True
+    )
+    def add_company(n_clicks, name, description, start_date, end_date, location, is_current_job):
+        print('clicked !!!!!')
+        if n_clicks is None:
+            return "Please fill in the form to add a company."
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%b %Y")
+        db_client = get_db_client()
+        # Assuming you have a database session 'db_session' accessible within this function
+        # Adjust logic based on your 'create_company' signature and your form's 'is_current_job' handling
+        if is_current_job:
+            end_date = 'Now'  # or any logic you want to apply for the 'current job'
+        # Call the DB function
+        try:
+            CompanyApi.create_company(db_client, name, description, start_date, end_date, location)
+            return "Company successfully added!", True
+        except Exception as e:
+            print(e)  # For debugging, consider a more robust error handling/logging
+            return "Failed to add company. Please try again.", True
+        finally:
+            db_client.close()
 
     return app
 

@@ -7,7 +7,6 @@ This repository seeks to harness the capabilities of ChatGPT in generating more 
 
 Consequently, I am motivated to develop a solution that amplifies the likelihood of landing an interview while preserving every developer's valuable time.
 
-Update: added version 2 engine now and you can save the jd locally now
 
 ## Setup
 Use poetry to setup the environment
@@ -15,25 +14,30 @@ Use poetry to setup the environment
 poetry install
 ```
 
+## Use dash app to version control your resume and experience generateion
+1. Create a `.env` file with reference to `.env.sample`
+2. Prepare your base resume json
+2. Seed your sqlite DB
+```bash
+# 
+python seed.py
+```
 
-## How to use
-### 1. Set the Open AI api key as environment variable
+
+## Use CLI to generate your resume automatically
+1. Set the Open AI api key as environment variable
 ```bash
 # add this line in your .zshrc / .bashrc
 export OPENAI_API_KEY="your-openai-api-key"
 ```
-
-### 2. Prepare your base resume json
+2. Prepare your base resume json
 Prepare a base resume in JSON. Please refer to the resume.example.json
-
-### 3. Prepare the JD of your targeted job opening
+3. Prepare the JD of your targeted job opening
 Prepare a txt file containing the JD of your targeted job opening.
-
-### 4. Run with the CLI
+4. Run with the CLI
 ```bash
 python generate_resume.py --resume your-base-resume-json.json --jd your-job-description.txt
 ```
-
 
 ## Documentation
 Last update: 2023-11-17
