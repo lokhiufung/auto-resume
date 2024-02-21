@@ -1,0 +1,1 @@
+from auto_resume.app.app import create_app
