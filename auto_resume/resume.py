@@ -1,7 +1,7 @@
 from typing import List
 import json
 
-from auto_resume.sdk.create_resume import create_resume
+from auto_resume.sdk.resume_templates.create_resume_v1 import create_resume
 
 
 class Experience:

@@ -2,6 +2,7 @@ from docx import Document
 from docx.shared import Inches
 import docx.shared
 
+# use a table to contain all the work experiences
 
 def create_resume(resume):
     doc = Document()

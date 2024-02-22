@@ -4,7 +4,11 @@ import json
 
 from auto_resume.app.constants import BASE_RESUME_FILE_PATH
 
-from auto_resume.sdk.create_resume import create_resume
+# from auto_resume.sdk.resume_templates.create_resume_v1 import create_resume
+# from auto_resume.sdk.resume_templates.create_resume_v2 import create_resume
+from auto_resume.sdk.resume_templates.create_resume_v3 import create_resume
+
+
 
 
 def export_resume(data):
