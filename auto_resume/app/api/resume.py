@@ -1,14 +1,31 @@
 import tempfile
 
 import json
+from langchain_community.embeddings import SentenceTransformerEmbeddings
 
 from auto_resume.app.constants import BASE_RESUME_FILE_PATH
-
+from auto_resume.sdk.metrics import get_keyword_score, get_similarity_score
 from auto_resume.sdk.resume_templates.create_resume_v1 import create_resume
+
 # from auto_resume.sdk.resume_templates.create_resume_v2 import create_resume
 # from auto_resume.sdk.resume_templates.create_resume_v3 import create_resume
 
 
+
+def evaluate_resume(data, keywords, requirement_text):
+    embedding_model = SentenceTransformerEmbeddings()
+    keyword_scores = []
+    similarity_scores = []
+    for exp in data:
+        for desc in exp['experiences']:
+            keyword_scores.append(get_keyword_score(text=desc, keywords=keywords))
+            similarity_scores.append(get_similarity_score(text=desc, requirement_text=requirement_text, embedding_model=embedding_model))
+    total_keyword_score = sum(keyword_scores)
+    average_similarity_score = sum(similarity_scores) / len(similarity_scores)
+    return {
+        'total_keyword_score': total_keyword_score,
+        'average_similarity_score': average_similarity_score,
+    }
 
 
 def export_resume(data):
