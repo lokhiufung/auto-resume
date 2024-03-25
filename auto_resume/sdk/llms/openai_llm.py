@@ -22,7 +22,7 @@ class OpenaiLLM(BaseLLM):
         # TEMP
         print(f"Requesting OpenAI API", style='bold red')
         print(params, style='red')
-        res = openai.ChatCompletion.create(**params)
+        res = openai.chat.completions.create(**params)
         # TEMP
         num_tokens = self.num_tokens_from_messages(params['messages'])
         self.ttl_tokens_used += num_tokens
