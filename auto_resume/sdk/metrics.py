@@ -1,5 +1,4 @@
 import re
-from collections import Counter
 
 from langchain.evaluation import load_evaluator
 from langchain_core.embeddings import Embeddings
