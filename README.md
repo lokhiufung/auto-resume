@@ -11,7 +11,7 @@ Consequently, I am motivated to develop a solution that amplifies the likelihood
 I found that the auto mode did not make a good job. Most of the time the generated bullet points did not make sense. Therefore for the moment I created a dash app to version control your resume. I simply use the ChatGPT web interface to generate bullet points and I only stored those good generation in my database. You can use `add experience` on the app to do so.
 
 # Interface mode
-![auto-resume editor]('./auto-resume-app.png')
+![auto-resume editor]('auto-resume-app.png')
 
 ## Setup
 Use poetry to setup the environment
