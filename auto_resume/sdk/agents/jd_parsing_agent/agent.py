@@ -13,3 +13,4 @@ class JdParsingAgent(BaseAgent):
 
     def get_action(self, generated_text):
         return self.parse_json(generated_text)
+        
