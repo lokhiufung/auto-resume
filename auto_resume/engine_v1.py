@@ -42,7 +42,7 @@ class Engine:
         llm_config={
             'temperature': 0.3,
             'max_tokens': 2000,
-            'model': 'gpt-3.5-turbo'
+            'model': 'gpt-4o-mini'
         }
         llm_backend = 'openai'
 
@@ -50,7 +50,7 @@ class Engine:
             llm_config={
                 'temperature': 0.3,
                 'max_tokens': 2000,
-                'model': 'gpt-4'
+                'model': 'gpt-4o-mini'
             },
             llm_backend=llm_backend
         )
