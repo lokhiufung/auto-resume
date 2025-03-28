@@ -163,7 +163,7 @@ cython_debug/
 .DS_Store
 resume_*.json
 jd.txt
-resume-updated.docx
+resume*.docx
 mytest*.py
 storage/
 *.db

@@ -1,17 +1,26 @@
 # Build your resume once ONLY!!
 "Enhance" your experience to increase your chances of landing interviews, while saving valuable time for side projects and learning.
 
+---
+
+
+---
+
 
 ## Auto Resume
 This repository seeks to harness the capabilities of ChatGPT in generating more captivating and job description-targeted resumes from your base resume. I realized that the conversion rate from sending resumes to securing interviews was exceedingly low (around 2-3% per 100 applications). Enhancing your chances of an interview requires tailoring your resume to match the job description (e.g., incorporating relevant keywords like 'Python' for a python developer role). I found this "resume-fitting" task to be extremely annoying and meaningless. As a software developer, you'd likely prefer to devote your time to creating your next impactful project to address real-world issues—utilizing your software engineering skills to improve the lives of others.
 
 Consequently, I am motivated to develop a solution that amplifies the likelihood of landing an interview while preserving every developer's valuable time.
 
-## Current state
-I found that the auto mode did not make a good job. Most of the time the generated bullet points did not make sense. Therefore for the moment I created a dash app to version control your resume. I simply use the ChatGPT web interface to generate bullet points and I only stored those good generation in my database. You can use `add experience` on the app to do so.
+## Development journey
+The very first version of this project started with a fully automated approach: given a job description and a base resume, the system would automatically generate a tailored resume using ChatGPT. While this automation was promising, I quickly realized that many of the generated bullet points lacked coherence or relevance. It often required manual intervention to fix and verify them.
+
+To address this, I built a Dash app that allowed version control of resumes. With this setup, I manually used the ChatGPT web interface to generate bullet points, and only saved the good ones to a local database. This gave me finer control over the output and allowed me to curate high-quality experience entries over time. However, the process involved too many steps and became too slow and inefficient—especially when applying to many jobs.
+
+Now, I’ve shifted to a hybrid approach optimized for speed. I re-used the original command-line automation and built a lightweight web interface around it. The current version of the app only requires me to paste a job description and click a button to generate a tailored resume from my base resume. This drastically reduces the friction in the resume customization workflow while retaining some of the quality controls from earlier iterations.
 
 # Interface mode
-![auto-resume editor](auto-resume-app.png)
+![auto-resume editor](auto-resume-app-v2.png)
 
 ## Setup
 Use poetry to setup the environment
@@ -100,3 +109,10 @@ A utility function `create_resume()` is then employed to format the updated resu
 
 ## Feedback and Contributions
 Your feedback on the quality and effectiveness of this solution is highly appreciated. I am eager to learn and improve from your insights! Additionally, feel free to make pull requests—let's collaborate to enhance the hiring process together!
+
+## Planned Features
+
+| User Story | Feature | Acceptance Criteria | Status |
+|------------|---------|----------------------|--------|
+| As a frequent user of the resume generation dashboard, I want to have the system load a default base resume automatically, so that I don't need to manually drag and drop the same file every time I generate a resume. | Automatically use a default base resume if none is uploaded. | - If no base resume is uploaded, the app uses a predefined file (e.g., `./data/base_resume.json`).<br>- If a resume is uploaded, it overrides the default.<br>- The UI indicates which resume is being used. | Planned |
+| As a user of the resume generation dashboard, I want to see the download button only after the resume is successfully generated, so that I’m not confused by an inactive or premature download option. | Only show the Download Resume button after generation completes. | - "Download Resume" button is hidden by default.<br>- Button appears after resume generation completes.<br>- (Optional) A confirmation message is shown. | Planned |
